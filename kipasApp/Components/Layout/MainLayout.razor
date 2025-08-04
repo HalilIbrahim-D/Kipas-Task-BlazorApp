@@ -1,0 +1,58 @@
+﻿@inherits LayoutComponentBase
+
+<div class="layout">
+    <header>
+        <a href="/">
+            <img src="logo.svg" alt="Firma Logo" class="logo" />
+        </a>
+        <a href="https://kipas.com.tr/" target="_blank" class="about-link">About</a>
+    </header>
+
+    <main>
+        @Body
+    </main>
+</div>
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<style>
+    .layout {
+        background-color: #fefcf7; 
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header {
+        background-color: #d2b04c; 
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 40px; 
+        height: 80px; 
+        box-sizing: border-box;
+    }
+
+    .logo {
+        height: 60px; 
+        width: auto;
+    }
+
+    .about-link {
+        color: #000;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.1rem; 
+    }
+
+        .about-link:hover {
+            text-decoration: underline;
+        }
+
+    main {
+        flex-grow: 1;
+        padding: 20px;
+    }
+</style>

@@ -1,0 +1,34 @@
+﻿@if (IsVisible)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@Title</h5>
+                    <button type="button" class="btn-close" @onclick="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @ChildContent
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Title { get; set; } = "Modal Başlık";
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    public bool IsVisible { get; set; } = false;
+
+    public void Show() => IsVisible = true;
+    public void Hide()
+    {
+        IsVisible = false;
+        OnClose.InvokeAsync(null);
+    }
+
+    private void Close() => Hide();
+}

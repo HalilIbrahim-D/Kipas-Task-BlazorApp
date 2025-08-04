@@ -1,0 +1,84 @@
+﻿@page "/employees/details"
+@using Microsoft.EntityFrameworkCore
+@using kipasApp.Models
+@inject IDbContextFactory<kipasApp.Data.kipasAppDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<div>
+    <h2>Employee Card</h2>
+    <hr />
+    @if (employee is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <div class="small-table-container">
+            <table class="table table-striped mb-0">
+                <tbody>
+                    <tr>
+                        <th>Title</th>
+                        <td>@employee.Title</td>
+                    </tr>
+                    <tr>
+                        <th>FirstName</th>
+                        <td>@employee.FirstName</td>
+                    </tr>
+                    <tr>
+                        <th>LastName</th>
+                        <td>@employee.LastName</td>
+                    </tr>
+                    <tr>
+                        <th>BirthDate</th>
+                        <td>@employee.BirthDate.ToString("dd.MM.yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>Position</th>
+                        <td>@employee.Position</td>
+                    </tr>
+                    <tr>
+                        <th>HireDate</th>
+                        <td>@employee.HireDate.ToString("dd.MM.yyyy")</td>
+                    </tr>
+                    <tr>
+                        <th>State</th>
+                        <td>@employee.State</td>
+                    </tr>
+                    <tr>
+                        <th>Notes</th>
+                        <td>@employee.Notes</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>@employee.Address</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <a href="@($"/employees/edit?id={employee.Id}")" class="btn btn-outline-primary">Edit</a>
+            |
+            <a href="@($"/")" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Employee? employee;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        employee = await context.Employee.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (employee is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

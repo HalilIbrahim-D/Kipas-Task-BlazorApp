@@ -1,0 +1,50 @@
+﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using kipasApp.Models
+@using kipasApp.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<kipasApp.Data.kipasAppDbContext> DbFactory
+
+<PageTitle>Employee List</PageTitle>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Employee List</h2>
+    <a href="employees/create" class="btn btn-success" >+ Create New</a>
+</div>
+
+<QuickGrid Class="table" Items="context.Employee" Pagination="state">
+    <PropertyColumn Property="employee => employee.Title" Sortable="true" />
+    <PropertyColumn Property="employee => employee.FirstName" Sortable="true" />
+    <PropertyColumn Property="employee => employee.LastName" Sortable="true" />
+    <PropertyColumn Property="employee => employee.BirthDate" Sortable="true" />
+    <PropertyColumn Property="employee => employee.Position" Sortable="true" />
+    <PropertyColumn Property="employee => employee.HireDate" Sortable="true" />
+    <PropertyColumn Property="employee => employee.State" Sortable="true" />
+
+    <TemplateColumn Context="employee">
+        <a class="edit-button" href="@($"employees/edit?id={employee.Id}")">Edit</a>
+        <a class="details-button" href="@($"employees/details?id={employee.Id}")">Details</a>
+        <a class="delete-button" href="@($"employees/delete?id={employee.Id}")">Delete</a>
+
+    </TemplateColumn>
+</QuickGrid>
+<Paginator State="state" />
+
+
+@code {
+    private kipasAppDbContext context = default!;
+    
+    
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    PaginationState state = new PaginationState { ItemsPerPage = 50 };
+    
+    
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

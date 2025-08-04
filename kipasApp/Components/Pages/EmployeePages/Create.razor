@@ -1,0 +1,137 @@
+﻿@page "/employees/create"
+@using Microsoft.EntityFrameworkCore
+@using kipasApp.Models
+@inject IDbContextFactory<kipasApp.Data.kipasAppDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create Employee </PageTitle>
+
+<h2 class="soft-title">Create Employee</h2>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <!-- Daha geniş alan -->
+        <EditForm method="post" Model="Employee" OnValidSubmit="AddEmployee" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert" />
+
+            <table class="table table-bordered align-middle">
+                <tbody>
+                    <tr>
+                        <th style="width: 20%;">
+                            <label for="title" class="form-label">Title:</label>
+                        </th>
+                        <td style="width: 30%;">
+                            <InputSelect id="title" @bind-Value="Employee.Title" class="form-control">
+                                @foreach (var value in Enum.GetValues<TitleEnum>())
+                                {
+                                    <option value="@value">@value</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="() => Employee.Title" class="text-danger" />
+                        </td>
+
+                        <th style="width: 20%;">
+                            <label for="firstname" class="form-label">FirstName:</label>
+                        </th>
+                        <td style="width: 30%;">
+                            <InputText id="firstname" @bind-Value="Employee.FirstName" class="form-control" aria-required="true" />
+                            <ValidationMessage For="() => Employee.FirstName" class="text-danger" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <label for="lastname" class="form-label">LastName:</label>
+                        </th>
+                        <td>
+                            <InputText id="lastname" @bind-Value="Employee.LastName" class="form-control" aria-required="true" />
+                            <ValidationMessage For="() => Employee.LastName" class="text-danger" />
+                        </td>
+
+                        <th>
+                            <label for="birthdate" class="form-label">BirthDate:</label>
+                        </th>
+                        <td>
+                            <InputDate id="birthdate" @bind-Value="Employee.BirthDate" class="form-control" min="1900-01-01" max="2099-12-31" aria-required="true" />
+                            <ValidationMessage For="() => Employee.BirthDate" class="text-danger" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <label for="position" class="form-label">Position:</label>
+                        </th>
+                        <td>
+                            <InputText id="position" @bind-Value="Employee.Position" class="form-control" aria-required="true" />
+                            <ValidationMessage For="() => Employee.Position" class="text-danger" />
+                        </td>
+
+                        <th>
+                            <label for="hiredate" class="form-label">HireDate:</label>
+                        </th>
+                        <td>
+                            <InputDate id="hiredate" @bind-Value="Employee.HireDate" class="form-control" min="1984-01-01" max="2025-12-31" aria-required="true" />
+                            <ValidationMessage For="() => Employee.HireDate" class="text-danger" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <label for="state" class="form-label">State:</label>
+                        </th>
+                        <td>
+                            <InputSelect id="state" @bind-Value="Employee.State" class="form-control">
+                                @foreach (var value in Enum.GetValues<StateEnum>())
+                                {
+                                    <option value="@value">@value</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="() => Employee.State" class="text-danger" />
+                        </td>
+
+                        <th>
+                            <label for="notes" class="form-label">Notes:</label>
+                        </th>
+                        <td>
+                            <InputText id="notes" @bind-Value="Employee.Notes" class="form-control" />
+                            <ValidationMessage For="() => Employee.Notes" class="text-danger" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <label for="address" class="form-label">Address:</label>
+                        </th>
+                        <td colspan="3">
+                            <InputText id="address" @bind-Value="Employee.Address" class="form-control" />
+                            <ValidationMessage For="() => Employee.Address" class="text-danger" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+            <button type="submit" class="btn btn-primary">Create</button>
+            
+                <a href="/" class="btn btn-outline-secondary">Back to List</a>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+
+
+
+@code {
+    [SupplyParameterFromForm]
+    private Employee Employee { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddEmployee()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Employee.Add(Employee);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/");
+    }
+}
